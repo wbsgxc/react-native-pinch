@@ -1,5 +1,5 @@
 {
-  "name": "react-native-pinch",
+  "name": "react-native-pinch-refineiOS",
   "version": "0.1.0",
   "description": "React Native fetch with SSL Pinning support",
   "main": "index.js",
@@ -8,13 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/localz/react-native-pinch"
+    "url": "https://github.com/wbsgxc/react-native-pinch"
   },
   "keywords": [
     "react-native",
     "ios",
     "android",
     "SSL",
+    "TLS",
     "Network"
   ],
   "author": "Localz",
@@ -22,13 +23,13 @@
   "bugs": {
     "url": "https://github.com/localz/react-native-pinch/issues"
   },
-  "homepage": "https://github.com/localz/react-native-pinch#readme",
+  "homepage": "https://github.com/wbsgxc/react-native-pinch#readme",
   "devDependencies": {
-    "react": "15.3.2",
-    "react-native": "^0.34"
+    "react": "^16.6.0",
+    "react-native": "^0.57.0"
   },
   "peerDependencies": {
-    "react-native": ">=0.34 <1.0.0"
+    "react-native": ">=0.57.0"
   },
   "dependencies": {
     "q": "^1.4.1"
