@@ -1,5 +1,5 @@
 {
-  "name": "react-native-pinch-refineiOS",
+  "name": "react-native-pinch-refineios",
   "version": "0.1.0",
   "description": "React Native fetch with SSL Pinning support",
   "main": "index.js",
