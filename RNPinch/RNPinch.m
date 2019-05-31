@@ -7,7 +7,7 @@
 //
 
 #import "RNPinch.h"
-#import "RCTBridge.h"
+//#import <React/RCTBridge.h>
 
 @interface RNPinchException : NSException
 @end
@@ -36,7 +36,7 @@
     NSMutableArray *localCertData = [NSMutableArray array];
     for (NSString* certName in self.certNames) {
         NSString *cerPath = [[NSBundle mainBundle] pathForResource:certName ofType:@"cer"];
-        if (cerPath == nil) {
+        if (!cerPath) {
             @throw [[RNPinchException alloc]
                 initWithName:@"CertificateError"
                 reason:@"Can not load certicate given, check it's in the app resources."
@@ -45,9 +45,12 @@
         [localCertData addObject:[NSData dataWithContentsOfFile:cerPath]];
     }
 
-    NSMutableArray *pinnedCertificates = [NSMutableArray array];
+    NSMutableArray *pinnedCertificates = [@[] mutableCopy];
     for (NSData *certificateData in localCertData) {
-        [pinnedCertificates addObject:(__bridge_transfer id)SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificateData)];
+        NSObject * certificate = (__bridge_transfer id)SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificateData);
+        if (certificate) {
+            [pinnedCertificates addObject: certificate];
+        }
     }
     return pinnedCertificates;
 }
@@ -116,7 +119,11 @@ RCT_EXPORT_METHOD(fetch:(NSString *)url obj:(NSDictionary *)obj callback:(RCTRes
         if (obj[@"headers"] && [obj[@"headers"] isKindOfClass:[NSDictionary class]]) {
             NSMutableDictionary *m = [obj[@"headers"] mutableCopy];
             for (NSString *key in [m allKeys]) {
-                if (![m[key] isKindOfClass:[NSString class]]) {
+                NSObject * value = m[key];
+                if (!value || value == [NSNull null]) {
+                    m[key] = 0;
+                }
+                else if (![value isKindOfClass:[NSString class]]) {
                     m[key] = [m[key] stringValue];
                 }
             }
