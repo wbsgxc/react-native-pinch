@@ -129,9 +129,17 @@ RCT_EXPORT_METHOD(fetch:(NSString *)url obj:(NSDictionary *)obj callback:(RCTRes
             }
             [request setAllHTTPHeaderFields:m];
         }
+
         if (obj[@"body"]) {
-            NSData *data = [obj[@"body"] dataUsingEncoding:NSUTF8StringEncoding];
-            [request setHTTPBody:data];
+            if ([obj[@"body"] isKindOfClass: [NSString class]]) {
+                [request setHTTPBody: [obj[@"body"] dataUsingEncoding:NSUTF8StringEncoding]];
+            } else if ([obj[@"body"] isKindOfClass: [NSDictionary class]]) {
+                NSError * error = nil;
+                NSData * jsonData = [NSJSONSerialization dataWithJSONObject: obj[@"body"] options: 0 error: &error];
+                if (!error) {
+                    [request setHTTPBody: jsonData];
+                }
+            }
         }
     }
     if (obj && obj[@"sslPinning"] && obj[@"sslPinning"][@"cert"]) {
