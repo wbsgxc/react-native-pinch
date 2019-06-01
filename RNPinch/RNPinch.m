@@ -47,8 +47,8 @@
 
     NSMutableArray *pinnedCertificates = [@[] mutableCopy];
     for (NSData *certificateData in localCertData) {
-        NSObject * certificate = (__bridge_transfer id)SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificateData);
-        if (certificate) {
+        NSObject * pinnedCertificate = (__bridge_transfer id)SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificateData);
+        if (pinnedCertificate) {
             [pinnedCertificates addObject: certificate];
         }
     }
