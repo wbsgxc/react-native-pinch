@@ -153,27 +153,26 @@ RCT_EXPORT_METHOD(fetch:(NSString *)url obj:(NSDictionary *)obj callback:(RCTRes
         session = [NSURLSession sessionWithConfiguration:self.sessionConfig];
     }
 
-    __block NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (!error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
-                NSInteger statusCode = httpResp.statusCode;
-                NSString *bodyString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                NSString *statusText = [NSHTTPURLResponse localizedStringForStatusCode:httpResp.statusCode];
-
-                NSDictionary *res = @{
-                                      @"status": @(statusCode),
-                                      @"headers": httpResp.allHeaderFields,
-                                      @"bodyString": bodyString,
-                                      @"statusText": statusText
-                                      };
-                callback(@[[NSNull null], res]);
-            });
-        } else {
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 callback(@[@{@"message":error.localizedDescription}, [NSNull null]]);
             });
         }
+
+        NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
+        NSInteger statusCode = httpResp.statusCode;
+        NSString *bodyString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSString *statusText = [NSHTTPURLResponse localizedStringForStatusCode:httpResp.statusCode];
+
+        __block NSDictionary *res = @{ @"status": @(statusCode),
+                                      @"headers": httpResp.allHeaderFields,
+                                   @"bodyString": bodyString,
+                                   @"statusText": statusText };
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            callback(@[[NSNull null], res]);
+        });
     }];
 
     [dataTask resume];
